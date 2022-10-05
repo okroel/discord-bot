@@ -1,6 +1,5 @@
 # bot.py
 import os
-import random
 import requests
 
 import discord
@@ -8,6 +7,9 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from db import Wallet
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -28,5 +30,20 @@ async def get_floor_price(ctx, slug):
     floor_price = f"{slug} - Floor price: {content['stats']['floor_price']}"
 
     await ctx.send(floor_price)
+
+@bot.command()
+async def add_wallet(ctx, address, name, chain='ETH',
+                    help="Enter a valid address as address name [chain]"):
+
+    with Session(engine) as session:
+
+        # Add check if address already exists
+
+        wallet = Wallet(address=address,
+                        name=name,
+                        chain=chain)
+
+        session.add(wallet)
+        session.commit()
 
 bot.run(TOKEN)

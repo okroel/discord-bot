@@ -7,8 +7,10 @@ class Wallet(Base):
     __tablename__ = "wallets"
 
     id = Column(Integer, primary_key=True)
-    address = Column(String(50), nullable=False)
-    name = Column(String)
+    address = Column(String(50), unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    chain = Column(String)
 
     def __repr__(self):
-        pass
+        return f"Wallet(address={self.address!r}, name={self.name!r}, \
+                        chain={self.chain})"
